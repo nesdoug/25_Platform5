@@ -1,0 +1,92 @@
+/* 
+cc65 / 6502 is very slow at dealing with 2 arrays/pointers in the same line,
+which is why I replaced them with inline assembly.
+
+ASM notes...
+%v - Assembler name of a (global) variable or function
+*/
+
+void sprite_obj_init(void){
+
+	pointer = level_1_coins;
+	for(index = 0,index2 = 0;index < MAX_COINS; ++index){
+		
+		coin_x[index] = 0;
+
+		//coin_y[index] = pointer[index2]; // get a byte of data
+		__asm__ ("ldy %v", index2);
+		__asm__ ("lda (%v),y", pointer);
+		__asm__ ("ldx %v", index);
+		__asm__ ("sta %v,x", coin_y);
+		
+		__asm__ ("sta %v", temp1);
+		
+		if(temp1 == TURN_OFF) break;
+
+		++index2;
+		
+		coin_active[index] = 0;
+		
+		//coin_room[index] = pointer[index2]; // get a byte of data
+		__asm__ ("ldy %v", index2);
+		__asm__ ("lda (%v),y", pointer);
+		__asm__ ("ldx %v", index);
+		__asm__ ("sta %v,x", coin_room);
+		
+		++index2;
+		
+		//coin_actual_x[index] = pointer[index2];
+		__asm__ ("ldy %v", index2);
+		__asm__ ("lda (%v),y", pointer);
+		__asm__ ("ldx %v", index);
+		__asm__ ("sta %v,x", coin_actual_x);
+		
+		++index2;
+	}
+	
+	for(++index;index < MAX_COINS; ++index){
+		coin_y[index] = TURN_OFF;
+	}
+	
+	
+	
+	
+	pointer = level_1_enemies;
+	for(index = 0,index2 = 0;index < MAX_ENEMY; ++index){
+		
+		enemy_x[index] = 0;
+
+		//enemy_y[index] = pointer[index2]; // get a byte of data
+		__asm__ ("ldy %v", index2);
+		__asm__ ("lda (%v),y", pointer);
+		__asm__ ("ldx %v", index);
+		__asm__ ("sta %v,x", enemy_y);
+		__asm__ ("sta %v", temp1);
+		
+		if(temp1 == TURN_OFF) break;
+
+		++index2;
+		
+		enemy_active[index] = 0;
+		
+		//enemy_room[index] = pointer[index2]; // get a byte of data
+		__asm__ ("ldy %v", index2);
+		__asm__ ("lda (%v),y", pointer);
+		__asm__ ("ldx %v", index);
+		__asm__ ("sta %v,x", enemy_room);
+		
+		++index2;
+		
+		//enemy_actual_x[index] = pointer[index2];
+		__asm__ ("ldy %v", index2);
+		__asm__ ("lda (%v),y", pointer);
+		__asm__ ("ldx %v", index);
+		__asm__ ("sta %v,x", enemy_actual_x);
+		
+		++index2;
+	}
+	
+	for(++index;index < MAX_ENEMY; ++index){
+		enemy_y[index] = TURN_OFF;
+	}
+}

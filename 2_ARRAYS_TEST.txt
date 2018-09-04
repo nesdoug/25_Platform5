@@ -1,0 +1,107 @@
+; temp1 = pointer[index2]; // get a byte of data
+;
+	lda     _pointer
+	ldx     _pointer+1
+	ldy     _index2
+	sta     ptr1
+	stx     ptr1+1
+	lda     (ptr1),y
+	sta     _temp1
+;
+; coin_y[index] = temp1;
+;
+	ldy     _index
+	lda     _temp1
+	sta     _coin_y,y
+	
+10 lines of asm code to execute
+	
+was...
+
+
+
+55 lines of asm code to execute
+
+
+; coin_y[index] = pointer[index2];
+;
+	lda     #<(_coin_y)
+	ldx     #>(_coin_y)
+	clc
+	adc     _index
+	bcc     L094E
+	inx
+L094E:	jsr     pushax
+	lda     _pointer
+	ldx     _pointer+1
+	ldy     _index2
+	sta     ptr1
+	stx     ptr1+1
+	lda     (ptr1),y
+	ldy     #$00
+	jsr     staspidx	
+	
+.proc   pushax
+
+        pha                     ; (3)
+        lda     sp              ; (6)
+        sec                     ; (8)
+        sbc     #2              ; (10)
+        sta     sp              ; (13)
+        bcs     @L1             ; (17)
+        dec     sp+1            ; (+5)
+@L1:    ldy     #1              ; (19)
+        txa                     ; (21)
+        sta     (sp),y          ; (27)
+        pla                     ; (31)
+        dey                     ; (33)
+        sta     (sp),y          ; (38)
+        rts                     ; (44)     
+
+.endproc	
+	
+	
+.proc   staspidx
+
+        pha
+        sty     tmp1            ; Save Index
+        ldy     #1
+        lda     (sp),y
+        sta     ptr1+1
+        dey
+        lda     (sp),y
+        sta     ptr1            ; Pointer now in ptr1
+        ldy     tmp1            ; Restore offset
+        pla                     ; Restore value
+        sta     (ptr1),y        ; Store
+        jmp     incsp2          ; Drop address
+
+.endproc	
+
+.proc   popax
+
+        ldy     #1
+        lda     (sp),y          ; get hi byte
+        tax                     ; into x
+.if (.cpu .bitand ::CPU_ISET_65SC02)
+        lda     (sp)            ; get lo byte
+.else
+        dey
+        lda     (sp),y          ; get lo byte
+.endif
+
+.endproc
+
+
+
+.proc   incsp2
+
+        inc     sp              ; 5
+        beq     @L1             ; 2
+        inc     sp              ; 5
+        beq     @L2             ; 2
+        rts
+
+@L1:    inc     sp              ; 5
+@L2:    inc     sp+1            ; 5
+        rts
