@@ -139,15 +139,13 @@ void draw_sprites(void){
 	// clear all sprites from sprite buffer
 	oam_clear();
 
-	// reset index into the sprite buffer
-	sprid = 0;
 	
 	// draw 1 hero
 	if(direction == LEFT) {
-		sprid = oam_meta_spr(high_byte(BoxGuy1.x), high_byte(BoxGuy1.y), sprid, RoundSprL);
+		oam_meta_spr(high_byte(BoxGuy1.x), high_byte(BoxGuy1.y), RoundSprL);
 	}
 	else{
-		sprid = oam_meta_spr(high_byte(BoxGuy1.x), high_byte(BoxGuy1.y), sprid, RoundSprR);
+		oam_meta_spr(high_byte(BoxGuy1.x), high_byte(BoxGuy1.y), RoundSprR);
 	}
 	
 	
@@ -158,7 +156,7 @@ void draw_sprites(void){
 		temp1 = coin_active[index];
 		temp2 = coin_x[index];
 		if(temp1 && (temp_y < 0xf0)) {
-			sprid = oam_meta_spr(temp2, temp_y, sprid, CoinSpr);
+			oam_meta_spr(temp2, temp_y, CoinSpr);
 		}
 	}
 	
@@ -170,16 +168,16 @@ void draw_sprites(void){
 		temp2 = enemy_x[index];
 		if(temp2 > 0xf0) continue;
 		if(temp1 && (temp_y < 0xf0)) {
-			sprid = oam_meta_spr(temp2, temp_y, sprid, EnemySpr);
+			oam_meta_spr(temp2, temp_y, EnemySpr);
 		}
 	}
 	
 	
 	
 	// draw "coins" at the top in sprites
-	sprid = oam_meta_spr(16,16,sprid, CoinsSpr);
+	oam_meta_spr(16,16, CoinsSpr);
 	temp1 = coins + 0xf0;
-	sprid = oam_spr(64,16,temp1,3,sprid);
+	oam_spr(64,16,temp1,3);
 }
 	
 
