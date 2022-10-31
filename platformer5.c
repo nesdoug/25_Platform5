@@ -443,8 +443,6 @@ void draw_screen_R(void){
 	nt = temp1 & 1;
 	x = pseudo_scroll_x & 0xff;
 	
-	// important that the main loop clears the vram_buffer
-	
 	switch(scroll_count){
 		case 0:
 			address = get_ppu_addr(nt, x, 0);
