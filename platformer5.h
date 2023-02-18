@@ -1,8 +1,9 @@
-#define ACCEL 0x30
-#define GRAVITY 0x50
+#define ACCEL 30
+#define DECEL 50
+#define GRAVITY 0x4c
 #define MAX_SPEED 0x240
 #define JUMP_VEL -0x600
-#define MAX_RIGHT 0xb000
+#define MAX_RIGHT 0x9000
 
 
 
@@ -45,7 +46,7 @@ unsigned char scroll_count;
 unsigned int pseudo_scroll_x;
 //unsigned int pseudo_scroll_y;
 unsigned char L_R_switch;
-unsigned char old_x;
+unsigned int old_x;
 //unsigned char old_y;
 unsigned char temp_x;
 unsigned char temp_y;
@@ -59,6 +60,9 @@ enum {MODE_GAME, MODE_PAUSE};
 
 unsigned char coins;
 const unsigned char * pointer;
+unsigned char map_loaded; //only load it once
+
+unsigned char temp_room;
 
 
 
@@ -222,13 +226,17 @@ const unsigned char level_1_enemies[]={
 void load_room(void);
 void draw_sprites(void);
 void movement(void);	
-void bg_collision(void);
 void draw_screen_R(void);
 void new_cmap(void);
-void bg_collision_sub(void);
-void bg_check_low(void);
+char bg_collision_sub(void);
 char get_position(void);
 void enemy_moves(void);
 void sprite_collisions(void);
 void check_spr_objects(void);
 void sprite_obj_init(void);
+
+char bg_coll_L(void);
+char bg_coll_R(void);
+char bg_coll_U(void);
+char bg_coll_D(void);
+char bg_coll_D2(void);
